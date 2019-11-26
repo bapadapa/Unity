@@ -8,17 +8,21 @@ public class CharacterContorller : MonoBehaviour
     Animator animator;
 
 
-    public int MoveSpeed = 10;
+    public int MoveSpeed;
     public int jumpPower = 10;
     public int rotationSpeed = 10;
+
+
 
     float horizontalMove;
     float verticalMove;
     Vector3 movement;
 
-    public int jumpCnt;
-
+    public int jumpCnt; //아이템 먹으면 다중점프하게 만들려고 함.
     private bool IsJumping;
+
+    private bool isAttacking;
+    private bool isDefencing;
 
 
 
@@ -28,8 +32,13 @@ public class CharacterContorller : MonoBehaviour
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
         IsJumping = false;
+        isAttacking = false;
+        isDefencing = false;
 
-        jumpCnt = 1;
+        MoveSpeed = 10;
+
+
+        jumpCnt = 2;
 
     }
 
@@ -41,7 +50,10 @@ public class CharacterContorller : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
             IsJumping = true;
-
+        if (Input.GetMouseButtonDown(0)) //좌클릭시
+            isAttacking = true;
+        if (Input.GetMouseButtonDown(1)) //우클릭시
+            isDefencing = true;
 
 
     }
@@ -50,7 +62,8 @@ public class CharacterContorller : MonoBehaviour
     {
         Move();
         Jump();
-
+        AnimationUpdate();
+        AttackNDefence();
     }
 
 
@@ -61,26 +74,27 @@ public class CharacterContorller : MonoBehaviour
         movement.Set(horizontalMove, 0, verticalMove);
         movement = movement.normalized * MoveSpeed * Time.deltaTime;
         rigid.MovePosition(transform.position + movement);
+        
         Turn();
-        AnimationUpdate();
     }
 
     //점프
     public void Jump()
     {
 
-        if (IsJumping && jumpCnt-- > 0)
+        if (IsJumping && jumpCnt > 0)
         {
             rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
             IsJumping = false;
+            jumpCnt -= 1;
         }
         else
             return;
-
     }
 
     void AnimationUpdate()
     {
+        //멈추면
         if (horizontalMove == 0 && verticalMove == 0)
         {
             animator.SetBool("isRunning", false);
@@ -88,6 +102,30 @@ public class CharacterContorller : MonoBehaviour
         else
         {
             animator.SetBool("isRunning", true);
+        }
+
+        if (isAttacking)
+        {
+            animator.SetBool("isAttacking", true);
+            isAttacking = false;
+
+        }
+        else
+        {
+            animator.SetBool("isAttacking", false);            
+        }
+
+        if (isDefencing)
+        {
+            MoveSpeed = 1;
+            animator.SetBool("isDefencing", true);
+            isDefencing = false;
+        }
+        else
+        {
+            MoveSpeed = 10;
+            animator.SetBool("isDefencing", false);
+            
         }
     }
 
@@ -106,6 +144,13 @@ public class CharacterContorller : MonoBehaviour
 
     }
 
+    void AttackNDefence()
+    {
+        
+
+
+    }
+
 
 
 
@@ -114,7 +159,7 @@ public class CharacterContorller : MonoBehaviour
         //다중점프 방지.
         if (collision.gameObject.CompareTag("Ground"))
         {
-            jumpCnt = 1 ;
+            jumpCnt = 2;
         }
 
     }

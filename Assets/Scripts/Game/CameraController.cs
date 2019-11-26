@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour {
     public float offsetX = 0f;
     public float offsetY = 5f;
     public float offsetZ = -10f;
-    public float followSpeed = 20f;   
+    public float followSpeed = 100f;   
     Vector3 cameraPosition;
 
 	// Use this for initialization
@@ -29,8 +29,8 @@ public class CameraController : MonoBehaviour {
         cameraPosition.z = player.transform.position.z + offsetZ;
 
 
-        //transform.position = cameraPosition;
+        transform.position = cameraPosition;
         //위 함수를 조금 더 부드럽게 만들기.
-        transform.position = Vector3.Lerp(transform.position, cameraPosition, followSpeed * Time.deltaTime);
+        //transform.position = Vector3.Lerp(transform.position, cameraPosition, followSpeed * Time.deltaTime);
     }
 }
