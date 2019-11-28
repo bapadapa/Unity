@@ -56,6 +56,7 @@ public class CharacterContorller : MonoBehaviour
             isDefencing = true;
 
 
+
     }
     //물리적 처리
     void FixedUpdate()
@@ -74,10 +75,34 @@ public class CharacterContorller : MonoBehaviour
         movement.Set(horizontalMove, 0, verticalMove);
         movement = movement.normalized * MoveSpeed * Time.deltaTime;
         rigid.MovePosition(transform.position + movement);
-        
+
         Turn();
     }
 
+    //public void Move()
+    //{
+    //    if (Input.GetKey(KeyCode.W))
+    //    {
+    //        animator.SetFloat("Move", 1f, 0.1f, Time.deltaTime);
+    //    }
+    //    else if (Input.GetKey(KeyCode.S))
+    //    {
+    //        animator.SetFloat("Move", -1f, 0.1f, Time.deltaTime);
+    //    }
+    //    else if (Input.GetKey(KeyCode.A))
+    //    {
+    //        animator.SetFloat("Direction", -1f, 0.1f, Time.deltaTime);
+    //    }
+    //    else if (Input.GetKey(KeyCode.D))
+    //    {
+    //        animator.SetFloat("Direction", 1f, 0.1f, Time.deltaTime);
+    //    }
+    //    else
+    //    {
+    //        animator.SetFloat("Move", 0f, 0.1f, Time.deltaTime);
+    //        animator.SetFloat("Direction", 0f, 0.1f, Time.deltaTime);
+    //    }
+    //}
     //점프
     public void Jump()
     {
@@ -112,20 +137,22 @@ public class CharacterContorller : MonoBehaviour
         }
         else
         {
-            animator.SetBool("isAttacking", false);            
+            animator.SetBool("isAttacking", false);
         }
 
         if (isDefencing)
         {
             MoveSpeed = 1;
             animator.SetBool("isDefencing", true);
-            isDefencing = false;
+
+            if (Input.GetMouseButtonUp(1))
+                isDefencing = false;
         }
         else
         {
             MoveSpeed = 10;
             animator.SetBool("isDefencing", false);
-            
+
         }
     }
 
@@ -146,7 +173,7 @@ public class CharacterContorller : MonoBehaviour
 
     void AttackNDefence()
     {
-        
+
 
 
     }
