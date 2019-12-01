@@ -19,12 +19,10 @@ public class CharacterContorller : MonoBehaviour
     Vector3 movement;
 
     public int jumpCnt; //아이템 먹으면 다중점프하게 만들려고 함.
-    private bool IsJumping;
+    public bool IsJumping;
 
-    private bool isAttacking;
-    private bool isDefencing;
-
-
+    public bool isAttacking;
+    public bool isDefencing;
 
     // Use this for initialization
     void Start()
@@ -36,9 +34,8 @@ public class CharacterContorller : MonoBehaviour
         isDefencing = false;
 
         MoveSpeed = 10;
-
-
         jumpCnt = 2;
+
 
     }
 
@@ -50,10 +47,14 @@ public class CharacterContorller : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
             IsJumping = true;
+
         if (Input.GetMouseButtonDown(0)) //좌클릭시
             isAttacking = true;
-        if (Input.GetMouseButtonDown(1)) //우클릭시
+
+        if (Input.GetKeyDown(KeyCode.LeftShift)) //쉬프트 클릭시
             isDefencing = true;
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+            isDefencing = false;
 
 
 
@@ -64,7 +65,6 @@ public class CharacterContorller : MonoBehaviour
         Move();
         Jump();
         AnimationUpdate();
-        AttackNDefence();
     }
 
 
@@ -109,9 +109,11 @@ public class CharacterContorller : MonoBehaviour
 
         if (IsJumping && jumpCnt > 0)
         {
+            animator.SetBool("isJumping", true);
             rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
             IsJumping = false;
             jumpCnt -= 1;
+            animator.SetBool("isJumping", false);
         }
         else
             return;
@@ -131,7 +133,8 @@ public class CharacterContorller : MonoBehaviour
 
         if (isAttacking)
         {
-            animator.SetBool("isAttacking", true);
+            animator.SetBool("isAttacking", true);           
+          
             isAttacking = false;
 
         }
@@ -145,8 +148,7 @@ public class CharacterContorller : MonoBehaviour
             MoveSpeed = 1;
             animator.SetBool("isDefencing", true);
 
-            if (Input.GetMouseButtonUp(1))
-                isDefencing = false;
+  
         }
         else
         {
@@ -171,15 +173,6 @@ public class CharacterContorller : MonoBehaviour
 
     }
 
-    void AttackNDefence()
-    {
-
-
-
-    }
-
-
-
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -188,7 +181,21 @@ public class CharacterContorller : MonoBehaviour
         {
             jumpCnt = 2;
         }
-
+        else if (collision.gameObject.CompareTag("End")){
+            UnityEngine.SceneManagement.SceneManager.LoadScene("StartScenes");
+        }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //if (other.gameObject.CompareTag("smallMonster") && isAttacking)
+        //{
+        //    Destroy(other.gameObject);           
+        //    Debug.Log("Attacking : " + isAttacking);
+        //}
+        //Destroy(other.gameObject);
+    }
+
+
 
 }

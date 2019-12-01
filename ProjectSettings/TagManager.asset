@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - smallMonster
+  - weapon
+  - End
   layers:
   - Default
   - TransparentFX
