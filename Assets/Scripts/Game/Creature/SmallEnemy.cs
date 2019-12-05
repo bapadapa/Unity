@@ -14,6 +14,7 @@ public class SmallEnemy : MonoBehaviour
     private NavMeshAgent nvAgent;
     private Animator _animator;
 
+    public SmallMonsterGenerator smallMonsterGenerator;
 
     //추적 거리
     public float traceDist = 15.0f;
@@ -22,16 +23,18 @@ public class SmallEnemy : MonoBehaviour
     //사망 여부
     public bool isDead;
 
-
-
+    public SmallEnemyInfo SmallEnemyInfo;
+    public PlayerInfo playerInfo;
     // Start is called before the first frame update
     void Start()
     {
+
         _transform = this.gameObject.GetComponent<Transform>();
         playerTransform = GameObject.FindWithTag("Player").GetComponent<Transform>();
         nvAgent = this.gameObject.GetComponent<NavMeshAgent>();
         _animator = this.gameObject.GetComponent<Animator>();
         this.gameObject.tag = "smallMonster";
+
 
 
         isDead = false;
@@ -41,14 +44,23 @@ public class SmallEnemy : MonoBehaviour
         StartCoroutine(this.CheckState());
         StartCoroutine(this.CheckStateForAction());
 
+        smallMonsterGenerator = FindObjectOfType<SmallMonsterGenerator>();
 
+        //몹이랑 플레이어의 데미지 주고받기.
+        SmallEnemyInfo = FindObjectOfType<SmallEnemyInfo>();
+        playerInfo = FindObjectOfType<PlayerInfo>();
     }
 
 
     // Update is called once per frame
     void Update()
     {
-      
+        if (SmallEnemyInfo.current_HP <= 0)
+        {
+            curState = Currentstate.dead;
+            smallMonsterGenerator.MonsterCnt--;
+            SmallEnemyInfo.current_HP += 1;
+        }
     }
 
     // IEnumrator == GetEnumerator()함수를 구현하는데 사용..
@@ -72,11 +84,12 @@ public class SmallEnemy : MonoBehaviour
             {
                 curState = Currentstate.trace;
             }
-            else if(isDead)
+            else if (isDead)
             {
                 Debug.Log(isDead);
                 curState = Currentstate.dead;
-               
+
+
             }
             //Player가 주변에 없을때 대기상태.
             else
@@ -84,7 +97,7 @@ public class SmallEnemy : MonoBehaviour
                 curState = Currentstate.idle;
             }
         }
-      
+
     }
 
     //상태에 따른 Action구현.
@@ -99,7 +112,8 @@ public class SmallEnemy : MonoBehaviour
                     _animator.SetBool("isTrace", false);
                     break;
                 case Currentstate.trace:
-                    nvAgent.SetDestination(playerTransform.position);
+                    if (!_animator.GetBool("isDie"))
+                        nvAgent.SetDestination(playerTransform.position);
                     //nvAgent.destination = playerTransform.position;
                     //nvAgent.Resume();
                     _animator.SetBool("isTrace", true);
@@ -109,27 +123,43 @@ public class SmallEnemy : MonoBehaviour
                     break;
                 case Currentstate.dead:
                     //Destroy(this.gameObject);
+                    Destroy(this.gameObject, 5f);
+
                     _animator.SetBool("isDie", true);
-                    _animator.SetBool("isTrace", false);
-                    Destroy(this.gameObject,1.4f);  
+
+
+                    nvAgent.Stop();
                     break;
 
             }
             _animator.SetBool("isAttack", false);
             yield return null;
 
-            
+
 
         }
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("weapon"))
         {
-            curState = Currentstate.dead;
+            Debug.Log("무기");
+
+            SmallEnemyInfo.UIUpdate("Damage", "HP", 10.0f);
+            Debug.Log(SmallEnemyInfo.current_HP);
+
+
+        }
+        else if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("유저");
+            playerInfo.UIUpdate("Damage", "HP", 10.0f);
         }
     }
+
+
 
 }
 

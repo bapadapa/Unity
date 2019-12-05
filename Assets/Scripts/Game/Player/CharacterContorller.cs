@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class CharacterContorller : MonoBehaviour
 {
     Rigidbody rigid;
@@ -11,6 +10,10 @@ public class CharacterContorller : MonoBehaviour
     public int MoveSpeed;
     public int jumpPower = 10;
     public int rotationSpeed = 10;
+
+    public float playerHP;
+    public float playerMP;
+
 
 
 
@@ -24,6 +27,8 @@ public class CharacterContorller : MonoBehaviour
     public bool isAttacking;
     public bool isDefencing;
 
+    public PlayerInfo playerInfo;
+
     // Use this for initialization
     void Start()
     {
@@ -36,6 +41,7 @@ public class CharacterContorller : MonoBehaviour
         MoveSpeed = 10;
         jumpCnt = 2;
 
+        playerInfo = FindObjectOfType<PlayerInfo>();
 
     }
 
@@ -65,6 +71,8 @@ public class CharacterContorller : MonoBehaviour
         Move();
         Jump();
         AnimationUpdate();
+
+
     }
 
 
@@ -125,16 +133,26 @@ public class CharacterContorller : MonoBehaviour
         if (horizontalMove == 0 && verticalMove == 0)
         {
             animator.SetBool("isRunning", false);
+            //멈추면 MP 대폭 회복.
+            if (playerInfo.current_MP < playerInfo.Max_MP)
+                playerInfo.UIUpdate("Recover", "MP", 0.5f);
         }
         else
         {
             animator.SetBool("isRunning", true);
+            //움직이면 MP 소폭 회복.
+            if (playerInfo.current_MP < playerInfo.Max_MP)
+                playerInfo.UIUpdate("Recover", "MP", 0.2f);
         }
 
         if (isAttacking)
         {
-            animator.SetBool("isAttacking", true);           
-          
+            if (playerInfo.current_MP >= 10)
+            {
+                //떄릴때마다 마나 10씩 소모
+                playerInfo.UIUpdate("Damage", "MP", 10f);
+                animator.SetBool("isAttacking", true);
+            }
             isAttacking = false;
 
         }
@@ -148,7 +166,7 @@ public class CharacterContorller : MonoBehaviour
             MoveSpeed = 1;
             animator.SetBool("isDefencing", true);
 
-  
+
         }
         else
         {
@@ -181,21 +199,23 @@ public class CharacterContorller : MonoBehaviour
         {
             jumpCnt = 2;
         }
-        else if (collision.gameObject.CompareTag("End")){
+        else if (collision.gameObject.CompareTag("End"))
+        {
             UnityEngine.SceneManagement.SceneManager.LoadScene("StartScenes");
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (other.gameObject.CompareTag("smallMonster") && isAttacking)
-        //{
-        //    Destroy(other.gameObject);           
-        //    Debug.Log("Attacking : " + isAttacking);
-        //}
-        //Destroy(other.gameObject);
-    }
+        //
+        if (other.gameObject.CompareTag("smallMonster") && animator.GetBool("isAttacking"))
+        {
+            Destroy(other.gameObject);
 
+            Debug.Log(animator.GetBool("isAttacking"));
+        }
+
+    }
 
 
 }

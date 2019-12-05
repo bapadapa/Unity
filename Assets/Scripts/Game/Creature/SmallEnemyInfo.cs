@@ -1,0 +1,73 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+public class SmallEnemyInfo : MonoBehaviour
+{
+
+    public Image barImage;
+
+    public float Max_HP;
+    public float Max_MP;
+    public float current_HP;
+    public float current_MP;
+
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Max_HP = 20;
+        current_HP = 20;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        barImage.fillAmount = current_HP / Max_HP;
+    }
+    //SmallEnemyInfo.UIUpdate("Damage", "HP", -10.0f);
+    public void UIUpdate(string _Type, string _InfoType, float _Value)
+    {
+        float Type = 0; // 현재 수치
+        float MAXType = 0; //최대 수치
+        int Index = 0;  //MP or HP
+
+        Type = current_HP;
+        MAXType = Max_HP;
+
+        if (_Type == "Recover")
+            current_HP += _Value;
+        else
+            current_HP -= _Value;
+
+        //switch (_InfoType)
+        //{
+        //    case "HP":
+        //        {
+        //            Index = 0;
+        //            Type = current_HP;
+        //            MAXType = Max_HP;
+
+        //            if (_Type == "Recover")
+        //                current_HP += _Value;
+        //            else
+        //                current_HP -= _Value;
+        //            break;
+        //        }
+        //    case "MP":
+        //        {
+        //            Index = 1;
+        //            Type = current_MP;
+        //            MAXType = Max_MP;
+
+        //            if (_Type == "Recover")
+        //                current_MP += _Value;
+        //            else
+        //                current_MP -= _Value;
+        //            break;
+        //        }
+        //}
+        
+    }
+}
