@@ -73,8 +73,7 @@ public class CharacterContorller : MonoBehaviour
         Move();
         Jump();
         AnimationUpdate();
-
-
+      
     }
 
 
@@ -131,6 +130,9 @@ public class CharacterContorller : MonoBehaviour
 
     void AnimationUpdate()
     {
+        
+
+
         //멈추면
         if (horizontalMove == 0 && verticalMove == 0)
         {
@@ -138,6 +140,9 @@ public class CharacterContorller : MonoBehaviour
             //멈추면 MP 대폭 회복.
             if (playerInfo.current_MP < playerInfo.Max_MP)
                 playerInfo.UIUpdate("Recover", "MP", 0.5f);
+            if (playerInfo.current_HP < playerInfo.Max_HP)
+                playerInfo.UIUpdate("Recover", "HP", 0.2f);
+
         }
         else
         {
@@ -145,31 +150,45 @@ public class CharacterContorller : MonoBehaviour
             //움직이면 MP 소폭 회복.
             if (playerInfo.current_MP < playerInfo.Max_MP)
                 playerInfo.UIUpdate("Recover", "MP", 0.2f);
+            if (playerInfo.current_HP < playerInfo.Max_HP)
+                playerInfo.UIUpdate("Recover", "HP", 0.1f);
         }
+
+        //공격 애니메이션 작동시에만 트리거 활성화
+        if (Animator.StringToHash("Base Layer.Attack") == animator.GetCurrentAnimatorStateInfo(0).nameHash)
+        {
+            sword.isTrigger = true;
+        }
+        else
+            sword.isTrigger = false;
 
         if (isAttacking)
         {
+          
+
             if (playerInfo.current_MP >= 10)
             {
                 //떄릴때마다 마나 10씩 소모
                 playerInfo.UIUpdate("Damage", "MP", 10f);
                 animator.SetBool("isAttacking", true);
-                sword.isTrigger = true;
-                Debug.Log("현재 작동중인 애니메이션" + currentClipInfo[0].clip.name);
-                Debug.Log("현재 작동중인 애니메이션" + currentClipInfo[0].clip.length);
+     
+
             }
-             
             isAttacking = false;
+
 
         }
         else
         {
-            sword.isTrigger = false;
+            
+            
             animator.SetBool("isAttacking", false);
         }
 
         if (isDefencing)
         {
+            Debug.Log("isDefencing" + Animator.StringToHash("Base Layer.Defence"));
+            Debug.Log("current" + animator.GetCurrentAnimatorStateInfo(0).nameHash);
             MoveSpeed = 1;
             animator.SetBool("isDefencing", true);
 
@@ -181,15 +200,7 @@ public class CharacterContorller : MonoBehaviour
             animator.SetBool("isDefencing", false);
 
         }
-        if(currentClipInfo[0].clip.name == "infantry_04_attack_A")
-        {
-            sword.isTrigger = false;
-        }
-        else
-        {
-            sword.isTrigger = true;
-        }
-  
+       
     }
 
     void Turn()
@@ -215,23 +226,12 @@ public class CharacterContorller : MonoBehaviour
         {
             jumpCnt = 2;
         }
-        else if (collision.gameObject.CompareTag("End"))
+        if (collision.gameObject.CompareTag("End"))
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("StartScenes");
+            Debug.Log("End");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("EndScenes");
+
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    //
-    //    if (other.gameObject.CompareTag("smallMonster") && animator.GetBool("isAttacking"))
-    //    {
-    //        Destroy(other.gameObject);
-
-    //        Debug.Log(animator.GetBool("isAttacking"));
-    //    }
-
-    //}
-
-
+  
 }

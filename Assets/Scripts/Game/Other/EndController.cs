@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GateButtonController : MonoBehaviour
+public class EndController : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -21,10 +21,9 @@ public class GateButtonController : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             Debug.Log("End");
-            //UnityEngine.SceneManagement.SceneManager.LoadScene("EndScenes");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("EndScenes");
 
         }
-        //Destroy(other.gameObject);
     }
 
 }

@@ -23,6 +23,8 @@ public class SmallEnemy : MonoBehaviour
     //사망 여부
     public bool isDead;
 
+    float enemyHP = 0.0f;
+
     public SmallEnemyInfo SmallEnemyInfo;
     public PlayerInfo playerInfo;
     // Start is called before the first frame update
@@ -49,18 +51,32 @@ public class SmallEnemy : MonoBehaviour
         //몹이랑 플레이어의 데미지 주고받기.
         SmallEnemyInfo = FindObjectOfType<SmallEnemyInfo>();
         playerInfo = FindObjectOfType<PlayerInfo>();
+
+        enemyHP = SmallEnemyInfo.Max_HP;
     }
 
 
     // Update is called once per frame
     void Update()
     {
+
+
+
+    }
+
+
+    private void FixedUpdate()
+    {
         if (SmallEnemyInfo.current_HP <= 0)
         {
             curState = Currentstate.dead;
         }
-    }
+        //if (enemyHP == SmallEnemyInfo.current_HP )
+        //{
+        //    _animator.SetBool("isDamage", false);
+        //}
 
+    }
     //소멸자.
     private void OnDestroy()
     {
@@ -100,6 +116,7 @@ public class SmallEnemy : MonoBehaviour
             else
             {
                 curState = Currentstate.idle;
+           
             }
         }
 
@@ -144,6 +161,8 @@ public class SmallEnemy : MonoBehaviour
 
     }
 
+
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("weapon"))
@@ -151,13 +170,14 @@ public class SmallEnemy : MonoBehaviour
             Debug.Log("무기");
 
             SmallEnemyInfo.UIUpdate("Damage", "HP", 10.0f);
-            Debug.Log(SmallEnemyInfo.current_HP);
+            //_animator.SetBool("isDamage" , true);
+            //enemyHP = SmallEnemyInfo.current_HP;
 
 
         }
-        else if (other.gameObject.CompareTag("Player"))
+        //피격 당하지 않고 있을때.
+        else if ((Animator.StringToHash("Base Layer.Attack") == _animator.GetCurrentAnimatorStateInfo(0).nameHash))
         {
-            Debug.Log("유저");
             playerInfo.UIUpdate("Damage", "HP", 10.0f);
         }
     }

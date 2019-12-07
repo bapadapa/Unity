@@ -17,6 +17,8 @@ public class StartController : MonoBehaviour {
     public void ChangeToGameScene()
     {
         //LoadScene에 에러가 나서 이렇게 함.
+        Debug.Log("Start");
         UnityEngine.SceneManagement.SceneManager.LoadScene("GameScenes");
+        
     }
 }

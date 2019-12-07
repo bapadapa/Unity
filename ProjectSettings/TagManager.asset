@@ -8,6 +8,7 @@ TagManager:
   - smallMonster
   - weapon
   - End
+  - PlayerBody
   layers:
   - Default
   - TransparentFX
