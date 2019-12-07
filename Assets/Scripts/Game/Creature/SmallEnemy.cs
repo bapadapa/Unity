@@ -58,9 +58,14 @@ public class SmallEnemy : MonoBehaviour
         if (SmallEnemyInfo.current_HP <= 0)
         {
             curState = Currentstate.dead;
-            smallMonsterGenerator.MonsterCnt--;
-            SmallEnemyInfo.current_HP += 1;
         }
+    }
+
+    //소멸자.
+    private void OnDestroy()
+    {
+        smallMonsterGenerator.MonsterCnt--;
+        SmallEnemyInfo.current_HP += 1;
     }
 
     // IEnumrator == GetEnumerator()함수를 구현하는데 사용..
@@ -84,9 +89,9 @@ public class SmallEnemy : MonoBehaviour
             {
                 curState = Currentstate.trace;
             }
-            else if (isDead)
+            else if (SmallEnemyInfo.current_HP <= 0)
             {
-                Debug.Log(isDead);
+
                 curState = Currentstate.dead;
 
 
@@ -124,15 +129,13 @@ public class SmallEnemy : MonoBehaviour
                 case Currentstate.dead:
                     //Destroy(this.gameObject);
                     Destroy(this.gameObject, 5f);
-
                     _animator.SetBool("isDie", true);
+                    nvAgent.speed = 0;
 
-
-                    nvAgent.Stop();
                     break;
 
             }
-            _animator.SetBool("isAttack", false);
+
             yield return null;
 
 

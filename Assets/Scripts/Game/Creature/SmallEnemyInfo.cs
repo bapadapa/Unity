@@ -24,14 +24,14 @@ public class SmallEnemyInfo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        barImage.fillAmount = current_HP / Max_HP;
+
     }
     //SmallEnemyInfo.UIUpdate("Damage", "HP", -10.0f);
     public void UIUpdate(string _Type, string _InfoType, float _Value)
     {
         float Type = 0; // 현재 수치
         float MAXType = 0; //최대 수치
-        int Index = 0;  //MP or HP
+       // int Index = 0;  //MP or HP
 
         Type = current_HP;
         MAXType = Max_HP;
@@ -41,6 +41,9 @@ public class SmallEnemyInfo : MonoBehaviour
         else
             current_HP -= _Value;
 
+        barImage.fillAmount = current_HP / Max_HP;
+
+        //HP만 사용하기때문에 주석처리함.
         //switch (_InfoType)
         //{
         //    case "HP":
@@ -68,6 +71,6 @@ public class SmallEnemyInfo : MonoBehaviour
         //            break;
         //        }
         //}
-        
+
     }
 }

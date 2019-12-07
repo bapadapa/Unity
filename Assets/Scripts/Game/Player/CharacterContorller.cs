@@ -5,7 +5,8 @@ public class CharacterContorller : MonoBehaviour
 {
     Rigidbody rigid;
     Animator animator;
-
+    AnimatorClipInfo[] currentClipInfo;
+  
 
     public int MoveSpeed;
     public int jumpPower = 10;
@@ -14,7 +15,7 @@ public class CharacterContorller : MonoBehaviour
     public float playerHP;
     public float playerMP;
 
-
+    public MeshCollider sword;
 
 
     float horizontalMove;
@@ -25,7 +26,7 @@ public class CharacterContorller : MonoBehaviour
     public bool IsJumping;
 
     public bool isAttacking;
-    public bool isDefencing;
+    public bool isDefencing; 
 
     public PlayerInfo playerInfo;
 
@@ -42,7 +43,8 @@ public class CharacterContorller : MonoBehaviour
         jumpCnt = 2;
 
         playerInfo = FindObjectOfType<PlayerInfo>();
-
+        sword.GetComponent<MeshCollider>();
+        currentClipInfo = this.animator.GetCurrentAnimatorClipInfo(0);
     }
 
     // 키입력
@@ -152,12 +154,17 @@ public class CharacterContorller : MonoBehaviour
                 //떄릴때마다 마나 10씩 소모
                 playerInfo.UIUpdate("Damage", "MP", 10f);
                 animator.SetBool("isAttacking", true);
+                sword.isTrigger = true;
+                Debug.Log("현재 작동중인 애니메이션" + currentClipInfo[0].clip.name);
+                Debug.Log("현재 작동중인 애니메이션" + currentClipInfo[0].clip.length);
             }
+             
             isAttacking = false;
 
         }
         else
         {
+            sword.isTrigger = false;
             animator.SetBool("isAttacking", false);
         }
 
@@ -174,6 +181,15 @@ public class CharacterContorller : MonoBehaviour
             animator.SetBool("isDefencing", false);
 
         }
+        if(currentClipInfo[0].clip.name == "infantry_04_attack_A")
+        {
+            sword.isTrigger = false;
+        }
+        else
+        {
+            sword.isTrigger = true;
+        }
+  
     }
 
     void Turn()
@@ -205,17 +221,17 @@ public class CharacterContorller : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //
-        if (other.gameObject.CompareTag("smallMonster") && animator.GetBool("isAttacking"))
-        {
-            Destroy(other.gameObject);
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    //
+    //    if (other.gameObject.CompareTag("smallMonster") && animator.GetBool("isAttacking"))
+    //    {
+    //        Destroy(other.gameObject);
 
-            Debug.Log(animator.GetBool("isAttacking"));
-        }
+    //        Debug.Log(animator.GetBool("isAttacking"));
+    //    }
 
-    }
+    //}
 
 
 }
