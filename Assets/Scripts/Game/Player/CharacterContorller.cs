@@ -5,8 +5,7 @@ public class CharacterContorller : MonoBehaviour
 {
     Rigidbody rigid;
     Animator animator;
-    AnimatorClipInfo[] currentClipInfo;
-  
+    AnimatorClipInfo[] currentClipInfo;  
 
     public int MoveSpeed;
     public int jumpPower = 10;
@@ -46,7 +45,7 @@ public class CharacterContorller : MonoBehaviour
         sword.GetComponent<MeshCollider>();
         currentClipInfo = this.animator.GetCurrentAnimatorClipInfo(0);
     }
-
+    
     // 키입력
     void Update()
     {
@@ -63,17 +62,13 @@ public class CharacterContorller : MonoBehaviour
             isDefencing = true;
         else if (Input.GetKeyUp(KeyCode.LeftShift))
             isDefencing = false;
-
-
-
     }
     //물리적 처리
     void FixedUpdate()
     {
         Move();
         Jump();
-        AnimationUpdate();
-      
+        AnimationUpdate();      
     }
 
 
@@ -84,55 +79,12 @@ public class CharacterContorller : MonoBehaviour
         movement.Set(horizontalMove, 0, verticalMove);
         movement = movement.normalized * MoveSpeed * Time.deltaTime;
         rigid.MovePosition(transform.position + movement);
-
         Turn();
     }
 
-    //public void Move()
-    //{
-    //    if (Input.GetKey(KeyCode.W))
-    //    {
-    //        animator.SetFloat("Move", 1f, 0.1f, Time.deltaTime);
-    //    }
-    //    else if (Input.GetKey(KeyCode.S))
-    //    {
-    //        animator.SetFloat("Move", -1f, 0.1f, Time.deltaTime);
-    //    }
-    //    else if (Input.GetKey(KeyCode.A))
-    //    {
-    //        animator.SetFloat("Direction", -1f, 0.1f, Time.deltaTime);
-    //    }
-    //    else if (Input.GetKey(KeyCode.D))
-    //    {
-    //        animator.SetFloat("Direction", 1f, 0.1f, Time.deltaTime);
-    //    }
-    //    else
-    //    {
-    //        animator.SetFloat("Move", 0f, 0.1f, Time.deltaTime);
-    //        animator.SetFloat("Direction", 0f, 0.1f, Time.deltaTime);
-    //    }
-    //}
-    //점프
-    public void Jump()
-    {
-
-        if (IsJumping && jumpCnt > 0)
-        {
-            animator.SetBool("isJumping", true);
-            rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
-            IsJumping = false;
-            jumpCnt -= 1;
-            animator.SetBool("isJumping", false);
-        }
-        else
-            return;
-    }
 
     void AnimationUpdate()
     {
-        
-
-
         //멈추면
         if (horizontalMove == 0 && verticalMove == 0)
         {
@@ -142,7 +94,6 @@ public class CharacterContorller : MonoBehaviour
                 playerInfo.UIUpdate("Recover", "MP", 0.5f);
             if (playerInfo.current_HP < playerInfo.Max_HP)
                 playerInfo.UIUpdate("Recover", "HP", 0.2f);
-
         }
         else
         {
@@ -164,43 +115,28 @@ public class CharacterContorller : MonoBehaviour
 
         if (isAttacking)
         {
-          
-
             if (playerInfo.current_MP >= 10)
             {
                 //떄릴때마다 마나 10씩 소모
                 playerInfo.UIUpdate("Damage", "MP", 10f);
                 animator.SetBool("isAttacking", true);
-     
-
             }
             isAttacking = false;
-
-
         }
         else
         {
-            
-            
             animator.SetBool("isAttacking", false);
         }
-
         if (isDefencing)
         {
-            Debug.Log("isDefencing" + Animator.StringToHash("Base Layer.Defence"));
-            Debug.Log("current" + animator.GetCurrentAnimatorStateInfo(0).nameHash);
             MoveSpeed = 1;
             animator.SetBool("isDefencing", true);
-
-
         }
         else
         {
             MoveSpeed = 10;
             animator.SetBool("isDefencing", false);
-
         }
-       
     }
 
     void Turn()
@@ -208,17 +144,28 @@ public class CharacterContorller : MonoBehaviour
         //이 조건문을 이용하여 Vector값이 0으로 바뀌지 않게 함.
         if (horizontalMove == 0 && verticalMove == 0)
             return;
-
         Quaternion newRotation = Quaternion.LookRotation(movement);
         //너무 휙휙 바뀌어서 다른걸사용.
         //rigid.MoveRotation(newRotation); 
-
         rigid.rotation = Quaternion.Slerp(rigid.rotation, newRotation, rotationSpeed * Time.deltaTime);
 
 
     }
+    //점프
+    public void Jump()
+    {
 
-
+        if (IsJumping && jumpCnt > 0)
+        {
+            animator.SetBool("isJumping", true);
+            rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+            IsJumping = false;
+            jumpCnt -= 1;
+            animator.SetBool("isJumping", false);
+        }
+        else
+            return;
+    }
     private void OnCollisionEnter(Collision collision)
     {
         //다중점프 방지.

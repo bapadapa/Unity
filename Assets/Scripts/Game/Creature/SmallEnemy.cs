@@ -71,11 +71,7 @@ public class SmallEnemy : MonoBehaviour
         {
             curState = Currentstate.dead;
         }
-        //if (enemyHP == SmallEnemyInfo.current_HP )
-        //{
-        //    _animator.SetBool("isDamage", false);
-        //}
-
+        
     }
     //소멸자.
     private void OnDestroy()
@@ -105,13 +101,7 @@ public class SmallEnemy : MonoBehaviour
             {
                 curState = Currentstate.trace;
             }
-            else if (SmallEnemyInfo.current_HP <= 0)
-            {
 
-                curState = Currentstate.dead;
-
-
-            }
             //Player가 주변에 없을때 대기상태.
             else
             {
@@ -148,17 +138,10 @@ public class SmallEnemy : MonoBehaviour
                     Destroy(this.gameObject, 5f);
                     _animator.SetBool("isDie", true);
                     nvAgent.speed = 0;
-
                     break;
-
             }
-
             yield return null;
-
-
-
         }
-
     }
 
 
