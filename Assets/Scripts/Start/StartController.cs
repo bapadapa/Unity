@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 public class StartController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+
+
+    // Use this for initialization
+    void Start () {
+}
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+
+    }
 
     public void ChangeToGameScene()
     {
@@ -20,5 +22,10 @@ public class StartController : MonoBehaviour {
         Debug.Log("Start");
         UnityEngine.SceneManagement.SceneManager.LoadScene("GameScenes");
         
+    }
+
+    public void EndGame()
+    {
+        Application.Quit();
     }
 }
